@@ -1,25 +1,24 @@
 #!/usr/bin/env python
-
 """Tests for `demquery` package."""
 
-import pytest
+from urllib.request import urlretrieve
+from zipfile import ZipFile
 
-from demquery import demquery
+from demquery import Query
 
+# Download sample data
+stubs = ['USGS_NED_13_n33w117_IMG', 'USGS_NED_13_n34w117_IMG']
+for stub in stubs:
+    url = 'https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/13/IMG/'
+    url += stub
+    url += '.zip'
+    urlretrieve(url, stub + '.zip')
 
-@pytest.fixture
-def response():
-    """Sample pytest fixture.
-
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
-
-
-def test_content(response):
-    """Sample pytest test function with the pytest fixture as an argument."""
-    # from bs4 import BeautifulSoup
-    # assert 'GitHub' in BeautifulSoup(response.content).title.string
+    # Extract file
+    with ZipFile(stub + '.zip') as z:
+        z.extractall('.')
 
 
+def test_create_query():
+    dem_paths = [x + '.img' for z in stubs]
+    query = Query(dem_paths)
