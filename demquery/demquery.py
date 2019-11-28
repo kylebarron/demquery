@@ -16,7 +16,7 @@ from scipy.interpolate import interp2d
 
 
 class Query:
-    def __init__(self, dem_paths, band=1, gdalbuildvrt_path='gdalbuildvrt'):
+    def __init__(self, dem_paths, band=1):
         """Query Digital Elevation Model
 
         Parameters
@@ -26,17 +26,12 @@ class Query:
             GDAL.
         band : int
             band of DEM file to query data from; 1 by default.
-        gdalbuildvrt_path : str
-            path to gdalbuildvrt executable. If more than one DEM path is
-            provided, gdalbuildvrt is called to create a virtual dataset
-            combining all provided files.
         """
         super(Query, self).__init__()
         self.band = band
 
         if len(dem_paths) > 1:
-            self.dem_path = self._build_vrt(
-                dem_paths=dem_paths, gdalbuildvrt_path=gdalbuildvrt_path)
+            self.dem_path = self._build_vrt(dem_paths=dem_paths)
         else:
             self.dem_path = dem_paths[0]
 
@@ -83,7 +78,7 @@ class Query:
             ]
 
     def _build_vrt(self, dem_paths):
-        """Call gdalbuildvrt to create virtual raster
+        """Create virtual raster using gdal
 
         Parameters
         ----------
