@@ -8,6 +8,7 @@
 import os
 import os.path
 import tempfile
+from pathlib import Path
 
 import numpy as np
 import rasterio
@@ -89,15 +90,24 @@ class Query:
         -------
         str : path to virtual raster file
         """
+        # Make sure all dem_paths exist
+        # An obscure error is given if the files don't exist
+        for dem_path in dem_paths:
+            if not Path(dem_path).exists():
+                raise FileNotFoundError(dem_path)
+
         tmpdir = tempfile.mkdtemp()
         vrt_path = os.path.join(tmpdir, 'dem.vrt')
 
         # Setting vrt to None is weird but required
         # https://gis.stackexchange.com/a/314580
         # https://gdal.org/tutorials/raster_api_tut.html#using-createcopy
-        vrt_options = gdal.BuildVRTOptions()
-        vrt = gdal.BuildVRT(vrt_path, dem_paths, options=vrt_options)
+        vrt = gdal.BuildVRT(vrt_path, dem_paths)
         vrt = None
+
+        # Check that vrt_path actually was created
+        if not Path(vrt_path).exists():
+            raise ValueError('Unable to create virtual raster')
 
         return vrt_path
 
