@@ -1,3 +1,4 @@
+gdal>=2.4.0
 numpy>=1.16
 rasterio>=1.0
 scipy>=1.0.0
