@@ -8,10 +8,10 @@
 import os
 import os.path
 import tempfile
-from subprocess import run
 
 import numpy as np
 import rasterio
+from osgeo import gdal
 from scipy.interpolate import interp2d
 
 
@@ -82,17 +82,13 @@ class Query:
                 for point in points
             ]
 
-    def _build_vrt(self, dem_paths, gdalbuildvrt_path):
+    def _build_vrt(self, dem_paths):
         """Call gdalbuildvrt to create virtual raster
 
         Parameters
         ----------
         dem_paths : list
             list of strings or pathlib.Path to DEM paths
-        gdalbuildvrt_path : str
-            path to gdalbuildvrt executable. If more than one DEM path is
-            provided, gdalbuildvrt is called to create a virtual dataset
-            combining all provided files.
 
         Returns
         -------
@@ -101,20 +97,12 @@ class Query:
         tmpdir = tempfile.mkdtemp()
         vrt_path = os.path.join(tmpdir, 'dem.vrt')
 
-        # https://gdal.org/programs/gdalbuildvrt.html
-        # -q: quiet, no status bar
-        # Coerce dem_paths to str because they could be pathlib.Path objects
-        cmd = [
-            gdalbuildvrt_path,
-            vrt_path,
-            *[str(path) for path in dem_paths],
-            '-q',
-            '-overwrite',
-        ]
-        run(cmd, check=True, capture_output=True)
-        if not os.path.isfile(vrt_path):
-            msg = 'Unable to create virtual raster; check gdalbuildvrt path'
-            raise ValueError(msg)
+        # Setting vrt to None is weird but required
+        # https://gis.stackexchange.com/a/314580
+        # https://gdal.org/tutorials/raster_api_tut.html#using-createcopy
+        vrt_options = gdal.BuildVRTOptions()
+        vrt = gdal.BuildVRT(vrt_path, dem_paths, options=vrt_options)
+        vrt = None
 
         return vrt_path
 
