@@ -16,9 +16,20 @@ from scipy.interpolate import interp2d
 
 
 class Query:
-    """docstring for Query"""
     def __init__(self, dem_paths, band=1, gdalbuildvrt_path='gdalbuildvrt'):
-        """
+        """Query Digital Elevation Model
+
+        Parameters
+        ----------
+        dem_paths : list
+            list of paths to DEM files. DEM files can be any format readable by
+            GDAL.
+        band : int
+            band of DEM file to query data from; 1 by default.
+        gdalbuildvrt_path : str
+            path to gdalbuildvrt executable. If more than one DEM path is
+            provided, gdalbuildvrt is called to create a virtual dataset
+            combining all provided files.
         """
         super(Query, self).__init__()
         self.band = band
@@ -30,14 +41,24 @@ class Query:
             self.dem_path = dem_paths[0]
 
     def query_points(self, points, interp_kind=None):
-        """Query points in dem
+        """Query points in DEM
 
-        Args:
-            - points: list of tuples **in longitude, latitude order**
-            - interp_kind: one of None, linear, cubic, quintic. None will do no interpolation and choose the value in the DEM closest to the provided point. linear creates a 3x3 grid and runs linear interpolation; cubic creates a 5x5 grid and runs cubic interpolation; quintic creates a 7x7 grid and runs quintic interpolation
+        Parameters
+        ----------
+        points : list of float or int
+            list of tuples **in longitude, latitude order** representing points
+            to query from the DEM
+        interp_kind : None or str
+            one of None, 'linear', 'cubic', 'quintic'. None will do no
+            interpolation and choose the value in the DEM closest to the
+            provided point. linear creates a 3x3 grid and runs linear
+            interpolation; cubic creates a 5x5 grid and runs cubic
+            interpolation; quintic creates a 7x7 grid and runs quintic
+            interpolation
 
-        Returns:
-            List[float]: queried elevation values, in the units of the DEM
+        Returns
+        -------
+        List[float]: queried elevation values, in the units of the DEM
         """
         # interp_kind: num_buffer (number of bordering cells required for
         # interpolation)
@@ -64,12 +85,18 @@ class Query:
     def _build_vrt(self, dem_paths, gdalbuildvrt_path):
         """Call gdalbuildvrt to create virtual raster
 
-        Args:
-            - dem_paths: list of string or pathlib.Path to DEM paths
-            - gdalbuildvrt_path: str to path of gdalbuildvrt executable
+        Parameters
+        ----------
+        dem_paths : list
+            list of strings or pathlib.Path to DEM paths
+        gdalbuildvrt_path : str
+            path to gdalbuildvrt executable. If more than one DEM path is
+            provided, gdalbuildvrt is called to create a virtual dataset
+            combining all provided files.
 
-        Returns:
-            - str: path to vrt file
+        Returns
+        -------
+        str : path to virtual raster file
         """
         tmpdir = tempfile.mkdtemp()
         vrt_path = os.path.join(tmpdir, 'dem.vrt')
@@ -98,13 +125,16 @@ class Query:
         mosaic of tiles, the lon/lat could be within bounds of the virtual
         raster, but have no data.
 
-        Args:
-            - dem: open rasterio file object
-            - points: list of tuples in longitude, latitude order
-            - num_buffer
+        Parameters
+        ----------
+        dem : rasterio.DatasetReader
+            open rasterio DatasetReader
+        points : List[tuple]
+            list of tuples in longitude, latitude order
+        num_buffer : int
+            number of bordering cells around point to check
         """
         for lon, lat in points:
-
             # Find row, column of elevation square inside raster
             # Note that row should be thought of as the "y" value; it's the
             # number  _across_ rows, and col should be thought of as the "y"
@@ -129,10 +159,11 @@ class Query:
         Parameters
         ----------
         dem : rasterio.DatasetReader
+            open rasterio DatasetReader
         point : tuple
             tuple of int or float representing longitude and latitude
         num_buffer : int
-            number of bordering cells around point to use when interpolating
+            number of bordering cells around point to retrieve
 
         Returns
         -------
@@ -196,6 +227,23 @@ class Query:
         """Create grids of longitude and latitude values from column indices
 
         Each value corresponds to the center of the given cell.
+
+        Parameters
+        ----------
+        dem : rasterio.DatasetReader
+            open rasterio DatasetReader
+        minrow : int
+            min row to query
+        maxrow : int
+            max row to query
+        mincol : int
+            min col to query
+        maxcol : int
+            max col to query
+
+        Returns
+        -------
+        List[float]: queried elevation values, in the units of the DEM
         """
         # Create array of latitude/longitude pairs for each cell center
         lons = []
