@@ -32,11 +32,6 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     description="Wrapper around rasterio to query a Digital Elevation Model",
-    entry_points={
-        'console_scripts': [
-            'demquery=demquery.cli:main',
-        ],
-    },
     install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
