@@ -246,7 +246,7 @@ class Query:
 
         # Interpolate over the values
         lon, lat = point
-        fun = interp2d(x=x, y=y, z=z, kind=interp_kind)
+        fun = interp2d(x=x, y=y, z=z, kind=interp_kind, bounds_error=True)
         # with warnings.catch_warnings():
         #     warnings.simplefilter('error')
         result = fun(lon, lat)[0]
