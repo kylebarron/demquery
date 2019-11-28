@@ -284,7 +284,10 @@ class Query:
         """
         arr = self._get_buffer_grid(dem=dem, point=point, num_buffer=num_buffer)
 
-        if num_buffer == 0:
+        # Don't attempt interpolation if not necessary.
+        # arr[2, 0, 0] selects the single z value. arr[2] is the 2D array of z
+        # values; there's only one value there so it's [0, 0]
+        if interp_kind is None:
             return arr[2, 0, 0]
 
         # Take responses and create lists of lat/lons/values to interpolate over
@@ -293,10 +296,6 @@ class Query:
         z = arr[2].flatten()
 
         # Interpolate over the values
-        lon, lat = point
+        # fun() returns an array of length 1
         fun = interp2d(x=x, y=y, z=z, kind=interp_kind, bounds_error=True)
-        # with warnings.catch_warnings():
-        #     warnings.simplefilter('error')
-        result = fun(lon, lat)[0]
-
-        return result
+        return fun(point[0], point[1])[0]
