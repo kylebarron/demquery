@@ -18,7 +18,7 @@ before_install:
   - conda info -a
 
   - conda config --prepend channels conda-forge
-  - conda create -q -n TEST --strict-channel-priority python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file requirements_dev.txt
+  - conda create -q -n TEST python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file requirements_dev.txt
   - source activate TEST
   - conda info --all
 
