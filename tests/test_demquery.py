@@ -20,5 +20,5 @@ for stub in stubs:
 
 
 def test_create_query():
-    dem_paths = [x + '.img' for z in stubs]
+    dem_paths = [x + '.img' for x in stubs]
     query = Query(dem_paths)
