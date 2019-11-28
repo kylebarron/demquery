@@ -1,17 +1,27 @@
 # Config file for automatic testing at travis-ci.org
-
 language: python
 python:
-  - 3.8
-  - 3.7
-  - 3.6
-  - 3.5
+  # We don't actually use the Travis Python, but this keeps it organized.
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8"
+install:
+  - sudo apt-get update
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
 
-# Command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: pip install -U tox-travis
+  - conda create -q -n demquery python=$TRAVIS_PYTHON_VERSION gdal numpy rasterio scipy
+  - conda activate demquery
+  - python setup.py install
 
-# Command to run tests, e.g. python setup.py test
-script: tox
+script: pytest
 
 # Assuming you have installed the travis-ci CLI tool, after you
 # create the Github repo and add it to Travis, run the
