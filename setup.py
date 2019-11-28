@@ -1,27 +1,31 @@
 #!/usr/bin/env python
-
 """The setup script."""
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-with open('README.rst') as readme_file:
-    readme = readme_file.read()
+with open('README.md') as f:
+    readme = f.read()
 
-with open('HISTORY.rst') as history_file:
+with open('CHANGELOG.md') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', ]
+with open('requirements.txt') as requirements_file:
+    requirements = requirements_file.readlines()
+    requirements = [x[:-1] for x in requirements]
 
-setup_requirements = ['pytest-runner', ]
+with open('requirements_dev.txt') as test_requirements_file:
+    test_requirements = test_requirements_file.readlines()
+    test_requirements = [x[:-1] for x in test_requirements]
 
-test_requirements = ['pytest>=3', ]
+setup_requirements = ['setuptools >= 38.6.0', 'twine >= 1.11.0']
 
+# yapf: disable
 setup(
     author="Kyle Barron",
     author_email='kylebarron2@gmail.com',
     python_requires='>=3.5',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
@@ -31,10 +35,11 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    description="Wrapper around rasterio to query a Digital Elevation Model",
+    description="Wrapper around rasterio to query points on a Digital Elevation Model",
     install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
+    long_description_content_type='text/markdown',
     include_package_data=True,
     keywords='demquery',
     name='demquery',
