@@ -1,7 +1,7 @@
 # demquery
 
 
-[![Pypi](https://img.shields.io/pypi/v/demquery.svg)](https://pypi.python.org/pypi/demquery) [![Downloads](https://img.shields.io/travis/kylebarron/demquery.svg)](https://travis-ci.org/kylebarron/demquery)
+[![Pypi](https://img.shields.io/pypi/v/demquery.svg)](https://pypi.python.org/pypi/demquery) [![Downloads](https://img.shields.io/travis/kylebarron/demquery.svg)](https://travis-ci.org/kylebarron/demquery) [![Supported Python Versions](https://img.shields.io/pypi/pyversions/demquery.svg)](https://pypi.org/project/demquery/#supported-versions)
 
 Wrapper around rasterio to query points on a Digital Elevation Model.
 
