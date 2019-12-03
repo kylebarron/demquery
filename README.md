@@ -38,3 +38,10 @@ query = Query(dem_paths)
 points = [(-73.985564, 40.757965), (-73.968520, 40.778912)]
 elevations = query.query_points(points, interp_kind='linear')
 ```
+
+## Data Download
+
+For a great visual tool to download worldwide SRTM data, check out these sites:
+
+- 30m resolution: http://dwtkns.com/srtm30m/
+- 90m resolution: http://dwtkns.com/srtm/
