@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.0] - 2020-01-28
+
+- Add CLI script
+
 ## [0.2.1] - 2019-12-04
 
 - Include requirements.txt and requirements_dev.txt in manifest bundle
