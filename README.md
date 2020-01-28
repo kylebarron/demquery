@@ -77,3 +77,12 @@ For a great visual tool to download worldwide SRTM data, check out these sites:
 
 - 30m resolution: http://dwtkns.com/srtm30m/
 - 90m resolution: http://dwtkns.com/srtm/
+
+## Releasing
+
+To upload a new release to PyPI
+
+```bash
+python setup.py sdist
+twine upload dist/demquery-0.3.0.tar.gz
+```
