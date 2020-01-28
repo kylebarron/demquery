@@ -72,7 +72,6 @@ def process_features(features, query, interp_kind):
 
 
 def _add_elevation_to_tuple(t, query, interp_kind):
-    print(t)
     try:
         ele = query.query_points([t], interp_kind=interp_kind)[0]
     except NoDataException:
