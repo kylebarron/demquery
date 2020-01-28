@@ -2,6 +2,8 @@ name: demquery
 channels:
   - conda-forge
 dependencies:
+  - click>=7.0
+  - cligj>=0.5.0
   - gdal
   - numpy>=1.16
   - rasterio>=1.0

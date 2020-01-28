@@ -16,6 +16,10 @@ from osgeo import gdal
 from scipy.interpolate import interp2d
 
 
+class NoDataException(Exception):
+    pass
+
+
 class Query:
     def __init__(self, dem_paths, band=1):
         """Query Digital Elevation Model
@@ -102,7 +106,8 @@ class Query:
         # Setting vrt to None is weird but required
         # https://gis.stackexchange.com/a/314580
         # https://gdal.org/tutorials/raster_api_tut.html#using-createcopy
-        vrt = gdal.BuildVRT(vrt_path, dem_paths)
+        # The dem_paths must be str, not pathlib.Path!
+        vrt = gdal.BuildVRT(vrt_path, list(map(str, dem_paths)))
         vrt = None
 
         # Check that vrt_path actually was created
@@ -127,7 +132,10 @@ class Query:
         num_buffer : int
             number of bordering cells around point to check
         """
-        for lon, lat in points:
+        for point in points:
+            # Split after for line to allow Z in source points
+            lon, lat = point[0], point[1]
+
             # Find row, column of elevation square inside raster
             # Note that row should be thought of as the "y" value; it's the
             # number  _across_ rows, and col should be thought of as the "y"
@@ -168,7 +176,7 @@ class Query:
         # Note that row should be thought of as the "y" value; it's the number
         # _across_ rows, and col should be thought of as the "y" value _across_
         # columns.
-        lon, lat = point
+        lon, lat = point[0], point[1]
         row, col = dem.index(lon, lat)
 
         # Make window include cells around it
@@ -199,7 +207,7 @@ class Query:
                 msg = (
                     'Raster nodata value found near lon: {}, lat: {}'.format(
                         lon, lat))
-                raise ValueError(msg)
+                raise NoDataException(msg)
         except IndexError:
             # nodataval is not required to exist for each band
             pass
