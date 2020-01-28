@@ -25,6 +25,38 @@ conda install gdal rasterio numpy scipy -c conda-forge
 pip install demquery
 ```
 
+## CLI Script
+
+```
+> demquery --help
+Usage: demquery [OPTIONS] FEATURES...
+
+  Assign elevations to GeoJSON
+
+Options:
+  -d, --dem PATH          Paths to DEM files.  [required]
+  -g, --dem-glob TEXT     Glob expression for DEM paths if folder is provided.
+  -b, --band INTEGER      Band of rasters to use  [default: 1]
+  -i, --interp-kind TEXT  either None, "linear", "cubic", or "quintic". None
+                          will do no interpolation and choose the value in the
+                          DEM closest to the provided point. linear creates a
+                          3x3 grid and runs linear interpolation; cubic
+                          creates a 5x5 grid and runs cubic interpolation;
+                          quintic creates a 7x7 grid and runs quintic
+                          interpolation.
+  --help                  Show this message and exit.
+```
+
+```bash
+echo \
+    '{"type":"Feature","properties":{"name": "Glacier Peak"},"geometry":{"type":"Point","coordinates":[-121.2436843,48.0163834]}}' \
+    | demquery -d /path/to/dem/files
+```
+Outputs:
+```json
+{"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [-121.243684, 48.016383, 1431.5755615234375]}, "properties": {"name": "Glacier Peak"}}]}
+```
+
 ## Documentation
 
 ```py
