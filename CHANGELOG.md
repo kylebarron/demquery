@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.1] - 2020-08-19
+
+- No changes: try to get conda-forge package to work correctly
+
 ## [0.3.0] - 2020-01-28
 
 - Add CLI script
